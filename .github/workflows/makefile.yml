@@ -2,8 +2,8 @@ name: 编译红米K40-Kernelsu-Lxc-Docker内核
 
 on:
   workflow_dispatch:
-#env:
- # KERNELSU_TAG: v0.7.6
+env:
+  KERNELSU_TAG: v0.7.6
 
 jobs:
   build:
@@ -59,22 +59,7 @@ jobs:
         #sed -i '/^MODULE_IMPORT_NS(VFS_internal_I_am_really_a_filesystem_and_am_NOT_a_driver);/a #endif' drivers/kernelsu/core/init.c
         # 确认补丁打上了
         #grep -A2 -B1 MODULE_IMPORT_NS drivers/kernelsu/core/init.c
-        
-    - name: 打 4.19 兼容补丁
-      run: |
-        cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
-        echo "=== 确认 KSU 集成状态 ==="
-        ls -la drivers/ | grep kernelsu
-        KSU_INIT=KernelSU/kernel/core/init.c
-        ls -l "$KSU_INIT"
-        echo "=== 打补丁 ==="
-        sed -i '/^MODULE_IMPORT_NS(VFS_internal_I_am_really_a_filesystem_and_am_NOT_a_driver);/i #ifdef MODULE_IMPORT_NS' "$KSU_INIT"
-        sed -i '/^MODULE_IMPORT_NS(VFS_internal_I_am_really_a_filesystem_and_am_NOT_a_driver);/a #endif' "$KSU_INIT"
-        sed -i 's|#include <linux/pgtable.h>|#include <asm/pgtable.h>|' KernelSU/kernel/feature/sucompat.c
-        sed -i 's|#include <linux/pgtable.h>|#include <asm/pgtable.h>|' KernelSU/kernel/core/init.c 2>/dev/null || true
-        echo "=== 补丁结果 ==="
-        grep -B1 -A2 "MODULE_IMPORT_NS" "$KSU_INIT"
-        grep -rn "pgtable.h" KernelSU/kernel/ || true
+
         
                
     - name: 设置ccache缓存

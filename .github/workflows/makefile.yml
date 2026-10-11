@@ -62,10 +62,12 @@ jobs:
         
     - name: 打 4.19 兼容补丁
       run: |
-        echo "=== 调试：找 KSU 的 init.c ==="
-        find $GITHUB_WORKSPACE/kernel_workspace/android-kernel -maxdepth 5 -path "*kernelsu*core/init.c"
-        KSU_INIT=$(find $GITHUB_WORKSPACE/kernel_workspace/android-kernel -maxdepth 5 -path "*kernelsu*core/init.c" | head -1)
-        echo "patch target: $KSU_INIT"
+        cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
+        echo "=== 确认 KSU 集成状态 ==="
+        ls -la drivers/ | grep kernelsu
+        KSU_INIT=KernelSU/kernel/core/init.c
+        ls -l "$KSU_INIT"
+        echo "=== 打补丁 ==="
         sed -i '/^MODULE_IMPORT_NS(VFS_internal_I_am_really_a_filesystem_and_am_NOT_a_driver);/i #ifdef MODULE_IMPORT_NS' "$KSU_INIT"
         sed -i '/^MODULE_IMPORT_NS(VFS_internal_I_am_really_a_filesystem_and_am_NOT_a_driver);/a #endif' "$KSU_INIT"
         echo "=== 补丁结果 ==="

@@ -55,10 +55,10 @@ jobs:
         cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
         curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s ${{ env.KERNELSU_TAG }}
         # ↓ 4.19 内核兼容补丁：MODULE_IMPORT_NS 是 5.4+ 的宏，老内核没有
-        sed -i '/^MODULE_IMPORT_NS(VFS_internal_I_am_really_a_filesystem_and_am_NOT_a_driver);/i #ifdef MODULE_IMPORT_NS' drivers/kernelsu/core/init.c
-        sed -i '/^MODULE_IMPORT_NS(VFS_internal_I_am_really_a_filesystem_and_am_NOT_a_driver);/a #endif' drivers/kernelsu/core/init.c
+        #sed -i '/^MODULE_IMPORT_NS(VFS_internal_I_am_really_a_filesystem_and_am_NOT_a_driver);/i #ifdef MODULE_IMPORT_NS' drivers/kernelsu/core/init.c
+        #sed -i '/^MODULE_IMPORT_NS(VFS_internal_I_am_really_a_filesystem_and_am_NOT_a_driver);/a #endif' drivers/kernelsu/core/init.c
         # 确认补丁打上了
-        grep -A2 -B1 MODULE_IMPORT_NS drivers/kernelsu/core/init.c
+        #grep -A2 -B1 MODULE_IMPORT_NS drivers/kernelsu/core/init.c
 
                
     - name: 设置ccache缓存

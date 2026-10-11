@@ -70,8 +70,12 @@ jobs:
         echo "=== 打补丁 ==="
         sed -i '/^MODULE_IMPORT_NS(VFS_internal_I_am_really_a_filesystem_and_am_NOT_a_driver);/i #ifdef MODULE_IMPORT_NS' "$KSU_INIT"
         sed -i '/^MODULE_IMPORT_NS(VFS_internal_I_am_really_a_filesystem_and_am_NOT_a_driver);/a #endif' "$KSU_INIT"
+        sed -i 's|#include <linux/pgtable.h>|#include <asm/pgtable.h>|' KernelSU/kernel/feature/sucompat.c
+        sed -i 's|#include <linux/pgtable.h>|#include <asm/pgtable.h>|' KernelSU/kernel/core/init.c 2>/dev/null || true
         echo "=== 补丁结果 ==="
         grep -B1 -A2 "MODULE_IMPORT_NS" "$KSU_INIT"
+        grep -rn "pgtable.h" KernelSU/kernel/ || true
+        
                
     - name: 设置ccache缓存
       uses: hendrikmuhs/ccache-action@v1.2
